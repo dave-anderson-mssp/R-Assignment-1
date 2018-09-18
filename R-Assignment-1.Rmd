@@ -1,0 +1,73 @@
+---
+title: "R-Assignment-1"
+author: "Dave Anderson"
+date: "September 17, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+My first step was to find the probabilities of finding more than k errors on an individual page of text, given that the average number of errors is 2. This was achieved using a Cummulative Poisson Distribution.
+
+\vspace{.2in}
+
+$p_k = P(M > k) = 1 - P(M \leq k) =$ 1 - ppois($k$, lambda = 2).
+
+\vspace{.4in}
+
+Next, I used those probabilites in a binomial distribution to find the probabilities of of having more than k mistakes in no more n pages of a 50 page book. 
+
+\vspace{.4in}
+
+Each of those probabilities are length 51, for pages 0:50. The table of probabilites is provided on the next page, followed by an image of one of my favorite books!  
+
+!["Naked Statistics"](C:\Users\davea\OneDrive\Desktop\Naked_statistics.jpg)
+
+\vspace{.4in}
+
+```{r echo=FALSE}
+library(knitr)
+library(kableExtra)
+
+
+options(digits = 3)
+options(scipen = 999)
+
+```
+
+```{r  }
+#Individual probabilities for more than k errors
+kprobs <- 1 - ppois(0:7,2)
+
+#Probabilities that no more than n pages will contain more than k errors. I used individual codes because of issues with 0 in my loop. (ask Brian)
+k0 <- as.data.frame(pbinom(0:50,50,0.8647))
+k1 <- as.data.frame(pbinom(0:50,50,0.59399))
+k2 <- as.data.frame(pbinom(0:50,50,0.32332))
+k3 <- as.data.frame(pbinom(0:50,50,0.14288))
+k4 <- as.data.frame(pbinom(0:50,50,0.05265))
+k5 <- as.data.frame(pbinom(0:50,50,0.01656))
+k6 <- as.data.frame(pbinom(0:50,50,0.00453))
+k7 <- as.data.frame(pbinom(0:50,50,0.00110))
+
+
+
+#creating a NxK table with individual probabilities
+n <- 0:50
+tbl <- cbind(n,k0,k1,k2,k3,k4,k5,k6,k7)
+colnames(tbl) <- c("n", "k=0", "k=1","k=2","k=3","k=4","k=5","k=6","k=7")
+
+
+
+tab <- kable(tbl, caption = "Probabilities of no more than N pages with over K errors.")  
+
+tab <- kable_styling(tab, bootstrap_options = "striped", full_width = FALSE, position = "left", font_size = 8)
+
+tab
+
+
+
+
+```
